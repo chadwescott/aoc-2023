@@ -1,0 +1,15 @@
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\bin\Debug\net6.0\AdventOfCode.deps.json
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\bin\Debug\net6.0\AdventOfCode.dll
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\bin\Debug\net6.0\AdventOfCode.pdb
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\bin\Debug\net6.0\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\bin\Debug\net6.0\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\AdventOfCode.csproj.AssemblyReference.cache
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\AdventOfCode.GeneratedMSBuildEditorConfig.editorconfig
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\AdventOfCode.AssemblyInfoInputs.cache
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\AdventOfCode.AssemblyInfo.cs
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\AdventOfCode.csproj.CoreCompileInputs.cache
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\AdventOfCode.csproj.CopyComplete
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\AdventOfCode.dll
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\refint\AdventOfCode.dll
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\AdventOfCode.pdb
+C:\git\advent-of-code\AdventOfCode\AdventOfCode\obj\Debug\net6.0\ref\AdventOfCode.dll

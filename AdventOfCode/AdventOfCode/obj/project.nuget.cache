@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "2yMc7iE332RkHcyxG9R2BcP3OLTylzuJMU195vVnK30ngvqvxpVYWTuUg2UByb/0dQTjJx5f2njhTC6Esnatjw==",
+  "success": true,
+  "projectFilePath": "C:\\git\\advent-of-code\\AdventOfCode\\AdventOfCode\\AdventOfCode.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ChadWescott\\.nuget\\packages\\mstest.testframework\\3.1.1\\mstest.testframework.3.1.1.nupkg.sha512"
+  ],
+  "logs": []
+}
