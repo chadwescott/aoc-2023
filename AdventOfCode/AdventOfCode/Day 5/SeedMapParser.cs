@@ -25,7 +25,7 @@ namespace AdventOfCode.Day_5
       { "humidity-to-location map:", DataType.HumidityToLocation }
     };
 
-    public SeedMap ParseSeedMap(string input)
+    public SeedMap ParseSeedMap(string input, bool useRange = false)
     {
       var map = new SeedMap();
       var dataType = DataType.None;
@@ -34,7 +34,7 @@ namespace AdventOfCode.Day_5
         var parsedLine = line.Replace("\r", "");
         if (parsedLine.StartsWith("seeds: "))
         {
-          map.Seeds = GetSeeds(parsedLine);
+          map.Seeds = useRange ? GetSeedsWithRange(parsedLine): GetSeeds(parsedLine);
           continue;
         }
 
@@ -58,6 +58,23 @@ namespace AdventOfCode.Day_5
       return line.Split(" ").Select(x => long.Parse(x)).ToList();
     }
 
+    private List<long> GetSeedsWithRange(string line)
+    {
+      line = line.Replace("seeds: ", "");
+      var seeds = new List<long>();
+
+      var data = line.Split(" ").Select(x => long.Parse(x)).ToArray();
+      for (var i = 0; i < data.Length; i += 2)
+      {
+        for(var j = 0; j < data[i + 1]; j++)
+        {
+          seeds.Add(data[i] + j);
+        }
+      }
+
+      return seeds;
+    }
+
     private void ProcessLine(string line, SeedMap map, DataType dataType)
     {
       var data = line.Split(" ");
@@ -67,45 +84,57 @@ namespace AdventOfCode.Day_5
       var source = long.Parse(data[1]);
       var range = long.Parse(data[2]);
 
-      for (var i = 0; i < range; i++)
+      switch(dataType)
       {
-        switch(dataType)
-        {
-          case DataType.SeedToSoil:
-            map.SeedToSoilMap[source + i] = destination + i;
-            break;
-          case DataType.SoilToFertilizer:
-            map.SoilToFertilizerMap[source + i] = destination + i;
-            break;
-          case DataType.FertilizerToWater:
-            map.FertilizerToWaterMap[source + i] = destination + i;
-            break;
-          case DataType.WaterToLight:
-            map.WaterToLightMap[source + i] = destination + i;
-            break;
-          case DataType.LightToTemperature:
-            map.LightToTemperatureMap[source + i] = destination + i;
-            break;
-          case DataType.TemperatureToHumidity:
-            map.TemperatureToHumidityMap[source + i] = destination + i;
-            break;
-          case DataType.HumidityToLocation:
-            map.HumidityToLocationMap[source + i] = destination + i;
-            break;
-        }
+        case DataType.SeedToSoil:
+          map.SeedToSoilMap.Add(new MapData { Source = source, Destination = destination, Range = range });
+          break;
+        case DataType.SoilToFertilizer:
+          map.SoilToFertilizerMap.Add(new MapData { Source = source, Destination = destination, Range = range });
+          break;
+        case DataType.FertilizerToWater:
+          map.FertilizerToWaterMap.Add(new MapData { Source = source, Destination = destination, Range = range });
+          break;
+        case DataType.WaterToLight:
+          map.WaterToLightMap.Add(new MapData { Source = source, Destination = destination, Range = range });
+          break;
+        case DataType.LightToTemperature:
+          map.LightToTemperatureMap.Add(new MapData { Source = source, Destination = destination, Range = range });
+          break;
+        case DataType.TemperatureToHumidity:
+          map.TemperatureToHumidityMap.Add(new MapData { Source = source, Destination = destination, Range = range });
+          break;
+        case DataType.HumidityToLocation:
+          map.HumidityToLocationMap.Add(new MapData { Source = source, Destination = destination, Range = range });
+          break;
       }
     }
 
     public SeedData GetSeedData(long seed, SeedMap seedMap)
     {
       var data = new SeedData { Seed = seed };
-      data.Soil = seedMap.SeedToSoilMap.ContainsKey(seed) ? seedMap.SeedToSoilMap[seed] : seed;
-      data.Fertilizer = seedMap.SoilToFertilizerMap.ContainsKey(data.Soil) ? seedMap.SoilToFertilizerMap[data.Soil] : data.Soil;
-      data.Water = seedMap.FertilizerToWaterMap.ContainsKey(data.Fertilizer) ? seedMap.FertilizerToWaterMap[data.Fertilizer] : data.Fertilizer;
-      data.Light = seedMap.WaterToLightMap.ContainsKey(data.Water) ? seedMap.WaterToLightMap[data.Water] : data.Water;
-      data.Temperature = seedMap.LightToTemperatureMap.ContainsKey(data.Light) ? seedMap.LightToTemperatureMap[data.Light] : data.Light;
-      data.Humidity = seedMap.TemperatureToHumidityMap.ContainsKey(data.Temperature) ? seedMap.TemperatureToHumidityMap[data.Temperature] : data.Temperature;
-      data.Location = seedMap.HumidityToLocationMap.ContainsKey(data.Humidity) ? seedMap.HumidityToLocationMap[data.Humidity] : data.Humidity;
+
+      var soilMap = seedMap.SeedToSoilMap.SingleOrDefault(x => x.Source <= data.Seed && x.Source + x.Range > data.Seed);
+      data.Soil = soilMap == null ? data.Seed : data.Seed - soilMap.Source + soilMap.Destination;
+
+      var fertilizerMap = seedMap.SoilToFertilizerMap.SingleOrDefault(x => x.Source <= data.Soil && x.Source + x.Range > data.Soil);
+      data.Fertilizer = fertilizerMap == null ? data.Soil : data.Soil - fertilizerMap.Source + fertilizerMap.Destination;
+
+      var waterMap = seedMap.FertilizerToWaterMap.SingleOrDefault(x => x.Source <= data.Fertilizer && x.Source + x.Range > data.Fertilizer);
+      data.Water = waterMap == null ? data.Fertilizer : data.Fertilizer  - waterMap.Source + waterMap.Destination;
+
+      var lightMap = seedMap.WaterToLightMap.SingleOrDefault(x => x.Source <= data.Water && x.Source + x.Range > data.Water);
+      data.Light = lightMap == null ? data.Water : data.Water - lightMap.Source + lightMap.Destination;
+
+      var temperatureMap = seedMap.LightToTemperatureMap.SingleOrDefault(x => x.Source <= data.Light && x.Source + x.Range > data.Light);
+      data.Temperature = temperatureMap == null ? data.Light : data.Light - temperatureMap.Source + temperatureMap.Destination;
+
+      var humidityMap = seedMap.TemperatureToHumidityMap.SingleOrDefault(x => x.Source <= data.Temperature && x.Source + x.Range > data.Temperature);
+      data.Humidity = humidityMap == null ? data.Temperature : data.Temperature - humidityMap.Source + humidityMap.Destination;
+
+      var locationMap = seedMap.HumidityToLocationMap.SingleOrDefault(x => x.Source <= data.Humidity && x.Source + x.Range > data.Humidity);
+      data.Location = locationMap == null ? data.Humidity : data.Humidity - locationMap.Source + locationMap.Destination;
+
       return data;
     }
   }

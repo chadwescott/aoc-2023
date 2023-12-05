@@ -4,6 +4,7 @@ namespace AdventOfCode.Day_5
   public class SeedMapParserTests
   {
     private readonly SeedMapParser _target = new SeedMapParser();
+    private object _lock = new object();
 
     const string Sample = @"seeds: 79 14 55 13
 
@@ -231,20 +232,23 @@ humidity-to-location map:
     private long GetMinimumSeedLocation(SeedMap seedMap)
     {
       long minLocation = long.MaxValue;
-      foreach (var seed in seedMap.Seeds)
+      Parallel.ForEach(seedMap.Seeds, seed =>
       {
         var data = _target.GetSeedData(seed, seedMap);
-        if (data.Location < minLocation)
+        lock (_lock)
         {
-          minLocation = data.Location;
+          if (data.Location < minLocation)
+          {
+            minLocation = data.Location;
+          }
         }
-      }
+      });
 
       return minLocation;
     }
 
     [TestMethod]
-    public void SeedMapLowestLocationTest()
+    public void SeedMapLowestLocationPart1Test()
     {
       var seedMap = _target.ParseSeedMap(Sample);
       var minLocation = GetMinimumSeedLocation(seedMap);
@@ -254,6 +258,19 @@ humidity-to-location map:
       seedMap = _target.ParseSeedMap(Input);
       minLocation = GetMinimumSeedLocation(seedMap);
       Console.WriteLine(minLocation);
+    }
+
+    [TestMethod]
+    public void SeedMapLowestLocationPart2Test()
+    {
+      var seedMap = _target.ParseSeedMap(Sample, true);
+      var minLocation = GetMinimumSeedLocation(seedMap);
+
+      Assert.AreEqual(46, minLocation);
+
+      seedMap = _target.ParseSeedMap(Input, true);
+      minLocation = GetMinimumSeedLocation(seedMap);
+      Assert.AreEqual(1928058, minLocation);
     }
   }
 }
