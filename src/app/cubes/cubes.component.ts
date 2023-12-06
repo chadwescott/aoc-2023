@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { CubeData } from './cube-data.model';
-
+import { CubeData } from './cube.data';
 @Component({
   selector: 'aoc-cubes',
   templateUrl: './cubes.component.html',

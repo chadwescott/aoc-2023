@@ -34,7 +34,7 @@ namespace AdventOfCode.Day_5
         var parsedLine = line.Replace("\r", "");
         if (parsedLine.StartsWith("seeds: "))
         {
-          map.Seeds = useRange ? GetSeedsWithRange(parsedLine): GetSeeds(parsedLine);
+          map.Seeds = useRange ? GetSeedsWithRange(parsedLine) : GetSeeds(parsedLine);
           continue;
         }
 
@@ -44,7 +44,7 @@ namespace AdventOfCode.Day_5
           continue;
         }
 
-        if (parsedLine == "") {  dataType = DataType.None; continue; }
+        if (parsedLine == "") { dataType = DataType.None; continue; }
 
         ProcessLine(parsedLine, map, dataType);
       }
@@ -66,7 +66,7 @@ namespace AdventOfCode.Day_5
       var data = line.Split(" ").Select(x => long.Parse(x)).ToArray();
       for (var i = 0; i < data.Length; i += 2)
       {
-        for(var j = 0; j < data[i + 1]; j++)
+        for (var j = 0; j < data[i + 1]; j++)
         {
           seeds.Add(data[i] + j);
         }
@@ -84,7 +84,7 @@ namespace AdventOfCode.Day_5
       var source = long.Parse(data[1]);
       var range = long.Parse(data[2]);
 
-      switch(dataType)
+      switch (dataType)
       {
         case DataType.SeedToSoil:
           map.SeedToSoilMap.Add(new MapData { Source = source, Destination = destination, Range = range });
@@ -121,7 +121,7 @@ namespace AdventOfCode.Day_5
       data.Fertilizer = fertilizerMap == null ? data.Soil : data.Soil - fertilizerMap.Source + fertilizerMap.Destination;
 
       var waterMap = seedMap.FertilizerToWaterMap.SingleOrDefault(x => x.Source <= data.Fertilizer && x.Source + x.Range > data.Fertilizer);
-      data.Water = waterMap == null ? data.Fertilizer : data.Fertilizer  - waterMap.Source + waterMap.Destination;
+      data.Water = waterMap == null ? data.Fertilizer : data.Fertilizer - waterMap.Source + waterMap.Destination;
 
       var lightMap = seedMap.WaterToLightMap.SingleOrDefault(x => x.Source <= data.Water && x.Source + x.Range > data.Water);
       data.Light = lightMap == null ? data.Water : data.Water - lightMap.Source + lightMap.Destination;
@@ -136,6 +136,35 @@ namespace AdventOfCode.Day_5
       data.Location = locationMap == null ? data.Humidity : data.Humidity - locationMap.Source + locationMap.Destination;
 
       return data;
+    }
+
+    public long MinimumLocationWithSeed(SeedMap map)
+    {
+      foreach (var locationMap in map.HumidityToLocationMap.OrderBy(x => x.Destination))
+      {
+        var humidityMap = map.TemperatureToHumidityMap.FirstOrDefault(x => MapDataExists(x, locationMap))
+          ?? new MapData{ Source = locationMap.Destination, Destination = locationMap.Destination, Range = 1 };
+        var temperatureMap = map.LightToTemperatureMap.FirstOrDefault(x => MapDataExists(x, humidityMap))
+          ?? new MapData{ Source = humidityMap.Destination, Destination = humidityMap.Destination, Range = 1 };
+        var lightMap = map.WaterToLightMap.FirstOrDefault(x => MapDataExists(x, temperatureMap))
+          ?? new MapData{ Source = temperatureMap.Destination, Destination = temperatureMap.Destination, Range = 1 };
+        var waterMap = map.FertilizerToWaterMap.FirstOrDefault(x => MapDataExists(x, lightMap))
+          ?? new MapData{ Source = lightMap.Destination, Destination = lightMap.Destination, Range = 1 };
+        var fertilizerMap = map.SoilToFertilizerMap.FirstOrDefault(x => MapDataExists(x, waterMap))
+          ?? new MapData{ Source = waterMap.Destination, Destination = waterMap.Destination, Range = 1 };
+        var soilMap = map.SeedToSoilMap.FirstOrDefault(x => MapDataExists(x, fertilizerMap))
+          ?? new MapData{ Source = fertilizerMap.Destination, Destination = fertilizerMap.Destination, Range = 1 };
+        if (map.Seeds.Any(x => x >= soilMap.Source && x < soilMap.Source + soilMap.Range))
+        {
+          return GetSeedData(map.Seeds.First(x => x >= soilMap.Source && x < soilMap.Source + soilMap.Range), map).Location;
+        }
+      }
+      return -1;
+    }
+
+    private bool MapDataExists(MapData parent, MapData child)
+    {
+      return parent.Destination <= child.Source && parent.Destination + parent.Range > child.Source;
     }
   }
 }

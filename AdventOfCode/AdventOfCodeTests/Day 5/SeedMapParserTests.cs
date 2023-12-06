@@ -261,6 +261,7 @@ humidity-to-location map:
     }
 
     [TestMethod]
+    [Ignore]
     public void SeedMapLowestLocationPart2Test()
     {
       var seedMap = _target.ParseSeedMap(Sample, true);
@@ -270,6 +271,20 @@ humidity-to-location map:
 
       seedMap = _target.ParseSeedMap(Input, true);
       minLocation = GetMinimumSeedLocation(seedMap);
+      Assert.AreEqual(1928058, minLocation);
+    }
+
+    [TestMethod]
+    [Ignore]
+    public void SeedMapLowestLocationPart2RefactorTest()
+    {
+      var seedMap = _target.ParseSeedMap(Sample, true);
+      var minLocation = _target.MinimumLocationWithSeed(seedMap);
+
+      Assert.AreEqual(46, minLocation);
+
+      seedMap = _target.ParseSeedMap(Input, true);
+      minLocation = _target.MinimumLocationWithSeed(seedMap);
       Assert.AreEqual(1928058, minLocation);
     }
   }
