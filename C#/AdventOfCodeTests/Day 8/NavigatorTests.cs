@@ -3,7 +3,7 @@ using AdventOfCode.Day_8;
 namespace AdventOfCodeTests.Day_8
 {
   [TestClass]
-  public class NavigatorTests
+  public class OasisTests
   {
     private readonly Navigator _target = new Navigator();
 
