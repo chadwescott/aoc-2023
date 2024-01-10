@@ -1,4 +1,4 @@
-file = open('input3.txt', 'r')
+file = open('3input.txt', 'r')
 engineSchematics = []
 gearNumbers = [] # here we store all the gear numbers
 starPositions = [] # here we store coordinates of a star

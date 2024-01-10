@@ -1,4 +1,4 @@
-file = open('input3.txt', 'r')
+file = open('3input.txt', 'r')
 engineSchematics = [] # we will store the whole engine schematics here
 partNumbers = [] # here we will store all the part numbers
 
